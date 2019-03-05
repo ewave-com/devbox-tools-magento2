@@ -1,0 +1,13 @@
+#!/usr/bin/env php
+<?php
+/**
+ * @author    Ewave <https://ewave.com/>
+ * @copyright 2018-2019 NASKO TRADING PTY LTD
+ * @license   https://ewave.com/wp-content/uploads/2018/07/eWave-End-User-License-Agreement.pdf BSD Licence
+ */
+
+require_once __DIR__ . './../../autoload.php';
+
+$platform = 'magento2';
+\CoreDevBoxScripts\Framework\EntryPoint::run($platform);
+

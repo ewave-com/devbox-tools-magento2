@@ -1,0 +1,18 @@
+{
+    "name": "ewave/devbox-m2-scripts",
+    "description": "Scripts to help setup and install m2 application into developer's containers",
+    "type": "library",
+    "version": "1.0.0",
+    "require": {
+        "symfony/console": "^3.1",
+        "ewave/devbox-core-scripts": "dev-multy"
+    },
+    "autoload": {
+      "files": [ "registration.php" ],
+      "psr-4": {
+        "MagentoDevBox\\": ""
+      }
+    },
+    "license": "OSL-3.0",
+    "minimum-stability": "beta"
+}
