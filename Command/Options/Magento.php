@@ -19,6 +19,7 @@ class Magento extends AbstractOptions
     const PORT = 'magento-port';
     const PATH = 'magento-path';
     const URLS_UPDATE = 'yes';
+    const EMAILS_UPDATE = 'yes';
     const BACKEND_PATH = 'magento-backend-path';
     const ADMIN_USER = 'magento-admin-user';
     const ADMIN_PASSWORD = 'magento-admin-password';
@@ -45,6 +46,12 @@ class Magento extends AbstractOptions
                 'boolean' => true,
                 'description' => 'Update database URLs',
                 'question' => 'Do you want to update Urls in DB to Project values? %default%',
+                'default' => 'yes'
+            ],
+            static::EMAILS_UPDATE => [
+                'boolean' => true,
+                'description' => 'Update Emails',
+                'question' => 'Do you want to add postfix for customers and not only emails in DB? %default%',
                 'default' => 'yes'
             ],
             static::HOST => [
