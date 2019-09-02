@@ -20,18 +20,18 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * Command for Magento final steps
  */
-class MagentoSetupDbUrls extends CommandAbstract
+class MagentoResetEmails extends CommandAbstract
 {
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        $this->setName('magento2:setup:dburls')
-            ->setDescription('Change Urls in DB + protocol update (http <-> https)')
-            ->setHelp('Change Urls in DB');
+        $this->setName('magento2:setup:reset-emails')
+            ->setDescription('Postfix .reset-ewave.com will be added to email addresses.')
+            ->setHelp('Reset Emails in DB. Postfix .reset-ewave.com will be added to email addresses.');
 
-        $this->questionOnRepeat = 'Try to change protocol again?';
+        $this->questionOnRepeat = 'Try to reset email again?';
 
         parent::configure();
     }
@@ -41,7 +41,7 @@ class MagentoSetupDbUrls extends CommandAbstract
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->executeRepeatedly('updateDatabase', $input, $output);
+        $this->executeRepeatedly('updateEmails', $input, $output);
     }
 
     /**
@@ -49,10 +49,10 @@ class MagentoSetupDbUrls extends CommandAbstract
      * @param OutputInterface $output
      * @return bool
      */
-    protected function updateDatabase(InputInterface $input, OutputInterface $output)
+    protected function updateEmails(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
-        $this->commandTitle($io, 'Update Domains in DB');
+        $this->commandTitle($io, 'Set Https');
 
         $updateAgr = $this->requestOption(MagentoOptions::URLS_UPDATE, $input, $output, true);
         if (!$updateAgr) {
@@ -97,67 +97,55 @@ class MagentoSetupDbUrls extends CommandAbstract
             $dbName
         );
 
-        $domainsMap = JsonConfig::getConfig('sources->domains_mapping');
+        if ($io->ask('Add postfix to email in database?', 'Yes') == 'Yes'){
 
-        if ($domainsMap) {
-            foreach ($domainsMap as $k => $v) {
-                $q = sprintf(
-                    'UPDATE core_config_data'
-                    . ' set value = REPLACE(value, \'%s\', \'%s\')',
-                    $k,
-                    $v
-                );
+            $qm = '
+                drop procedure if exists change_emails;
+                create procedure change_emails(IN postfix VARCHAR(255) , IN DB_NAME VARCHAR(255))
+                BEGIN 
+                 
+                 DECLARE v_finished INTEGER DEFAULT 0;
+                 DECLARE tbl_names VARCHAR(50);
+                DECLARE tblname VARCHAR(50);
+                 DECLARE column_name VARCHAR(50);
+                DECLARE cur CURSOR FOR 
+                 SELECT DISTINCT t.TABLE_NAME as n , t.COLUMN_NAME as c
+                 FROM INFORMATION_SCHEMA.COLUMNS t
+                 WHERE (t.COLUMN_NAME IN (\'email\',\'customer_email\') /*OR (t.COLUMN_NAME like \'%email%\')*/ )
+                 AND TABLE_SCHEMA = DB_NAME;
+                DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_finished = 1;
+                DROP TEMPORARY TABLE IF EXISTS tblResults;
+                 CREATE TEMPORARY TABLE IF NOT EXISTS tblResults(
+                 id int,
+                 tbl_name VARCHAR(250),
+                 tbl_coloumn VARCHAR(250)
+                 );
+                OPEN cur;
+                tables_loop: LOOP
+                FETCH cur INTO tblname,column_name;
+                 
+                 IF v_finished = 1 THEN 
+                 LEAVE tables_loop;
+                 END IF;
+                 
+                 SET @s = CONCAT(\'UPDATE \', tblname , \' SET \' , column_name , \' = CONCAT(\' , column_name , \',\' , \'"\' , postfix , \'")\'); 
+                 PREPARE stmt FROM @s; 
+                 EXECUTE stmt;
+                 
+                 insert into tblResults(tbl_name , tbl_coloumn ) values (tblname , column_name);
+                 
+                 END LOOP;
+                CLOSE cur;
+                 SELECT * FROM tblResults;
+                END;
+                            
+                            
+                call change_emails(\'.reset-ewave.com\' , \'' . $dbName . '\');                            
+                            
+                ';
 
-                try {
-                    $output->writeln('<info>Updating Urls: ' . $k . ' to ' . $v . ' </info>');
-                    $output->writeln($q);
-                    $dbConnection->exec($q);
-                } catch (\Exception $e) {
-                    $io->note($e->getMessage());
-                    $io->note('Step skipped. Not possible to continue with DB update.');
-                    return false;
-                }
-            }
-        } else {
+            $dbConnection->exec($qm);
 
-            $io->note('Domains are not set in .env-projects.json. Default Replaces of the web/[un]secure/base_url records will be done');
-
-            if (!trim($magentoProtocol)) {
-                $commandsFormatted = ['http' => 'Use HTTP protocol', 'https' => 'Use HTTPS protocol (Secure)'];
-                $magentoProtocol = $io->choice('Type the protocol', $commandsFormatted);
-            }
-
-            $magentoUrl = sprintf(
-                '%s://%s/',
-                $magentoProtocol,
-                $magentoHost
-            );
-
-            $q = sprintf(
-                'UPDATE core_config_data'
-                . ' SET value = "%s" '
-                . ' WHERE path = "web/unsecure/base_url" OR path = "web/secure/base_url";',
-                $magentoUrl
-            );
-
-            $qv = sprintf(
-                'UPDATE core_config_data'
-                . ' SET value = 1 '
-                . ' WHERE path = "system/full_page_cache/caching_application";',
-                $magentoUrl
-            );
-
-            try {
-                $output->writeln('<info>Updating Urls...</info>');
-                $dbConnection->exec($q);
-                $output->writeln('<info>Updating Cache config to use files instead of varnish ...</info>');
-                $dbConnection->exec($qv);
-                $output->writeln('<info>Database has been updated.<info>');
-            } catch (\Exception $e) {
-                $io->note($e->getMessage());
-                $io->note('Step skipped. Not possible to continue with DB update.');
-                return false;
-            }
         }
 
 
