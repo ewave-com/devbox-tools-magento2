@@ -54,7 +54,7 @@ class MagentoResetEmails extends CommandAbstract
         $io = new SymfonyStyle($input, $output);
         $this->commandTitle($io, 'Set Https');
 
-        $updateAgr = $this->requestOption(MagentoOptions::URLS_UPDATE, $input, $output, true);
+        $updateAgr = $this->requestOption(MagentoOptions::EMAILS_UPDATE, $input, $output, true);
         if (!$updateAgr) {
             $output->writeln('<comment>Urls updating skipped</comment>');
             return true;
@@ -165,7 +165,7 @@ class MagentoResetEmails extends CommandAbstract
     public function getOptionsConfig()
     {
         return [
-            MagentoOptions::URLS_UPDATE => MagentoOptions::get(MagentoOptions::URLS_UPDATE),
+            MagentoOptions::EMAILS_UPDATE => MagentoOptions::get(MagentoOptions::EMAILS_UPDATE),
             DbOptions::HOST => DbOptions::get(DbOptions::HOST),
             DbOptions::USER => DbOptions::get(DbOptions::USER),
             DbOptions::PASSWORD => DbOptions::get(DbOptions::PASSWORD),
