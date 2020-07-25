@@ -18,8 +18,8 @@ class Magento extends AbstractOptions
     const HOST = 'magento-host';
     const PORT = 'magento-port';
     const PATH = 'magento-path';
-    const URLS_UPDATE = 'yes';
-    const EMAILS_UPDATE = 'yes';
+    const URLS_UPDATE = 'update-urls';
+    const EMAILS_UPDATE = 'update-emails';
     const BACKEND_PATH = 'magento-backend-path';
     const ADMIN_USER = 'magento-admin-user';
     const ADMIN_PASSWORD = 'magento-admin-password';

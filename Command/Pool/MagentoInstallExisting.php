@@ -62,6 +62,7 @@ class MagentoInstallExisting extends CommandAbstract
                 'core:setup:media',
                 'magento2:setup:configs',
                 'core:setup:db',
+                'core:setup:update-db-data',
                 'magento2:setup:dburls',
                 'magento2:setup:reset-emails',
                 'magento2:setup:common-commands',
