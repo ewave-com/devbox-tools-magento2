@@ -68,7 +68,7 @@ class MagentoActions extends CoreActionsAbstract
     public function getJoke()
     {
         try {
-            $ans = file_get_contents('http://api.icndb.com/jokes/random');
+            $ans = file_get_contents('http://api.icndb.com/jokes/random', 0, stream_context_create(["http"=>["timeout"=>0.5]]));
             $ansO = json_decode($ans);
             if ($ansO->type == 'success') {
                 return $ansO->value->joke;

@@ -39,7 +39,7 @@ class MagentoFlushAll extends CommandAbstract
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $destinationPath = EnvConfig::getValue('WEBSITE_DOCUMENT_ROOT');
+        $destinationPath = EnvConfig::getValue('WEBSITE_APPLICATION_ROOT') ?: EnvConfig::getValue('WEBSITE_DOCUMENT_ROOT');
         $io = new SymfonyStyle($input, $output);
         $this->commandTitle($io, 'Flushing of Magento cache, static, generated code and Redis');
 

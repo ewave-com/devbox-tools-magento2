@@ -19,6 +19,8 @@ class Magento extends AbstractOptions
     const PORT = 'magento-port';
     const PATH = 'magento-path';
     const URLS_UPDATE = 'update-urls';
+    const SALES_PREFIX_UPDATE = 'update-sales-prefix';
+    const SALES_PREFIX_ORDERS_UPDATE = 'update-sales-prefix-for-existed-orders';
     const EMAILS_UPDATE = 'update-emails';
     const BACKEND_PATH = 'magento-backend-path';
     const ADMIN_USER = 'magento-admin-user';
@@ -40,19 +42,31 @@ class Magento extends AbstractOptions
                 'boolean' => true,
                 'description' => 'Whether to use existing Magento config files',
                 'question' => 'Do you want to update Env.php and Config.php files from source? %default%',
-                'default' => 'yes'
+                'default' => true
             ],
             static::URLS_UPDATE => [
                 'boolean' => true,
                 'description' => 'Update database URLs',
                 'question' => 'Do you want to update Urls in DB to Project values? %default%',
-                'default' => 'yes'
+                'default' => true
+            ],
+            static::SALES_PREFIX_UPDATE => [
+                'boolean' => true,
+                'description' => 'Update database sales prefixes',
+                'question' => 'Do you want to update sales prefixes in DB? %default%',
+                'default' => true
+            ],
+            static::SALES_PREFIX_ORDERS_UPDATE => [
+                'boolean' => true,
+                'description' => 'Update database sales prefixes for existed orders',
+                'question' => 'Do you want to update increment_id for existed sales entities (e.g. orders)? If no - apply for new only. %default%',
+                'default' => false
             ],
             static::EMAILS_UPDATE => [
                 'boolean' => true,
                 'description' => 'Update Emails',
                 'question' => 'Do you want to add postfix for customers and not only emails in DB? %default%',
-                'default' => 'yes'
+                'default' => true
             ],
             static::HOST => [
                 'default' => '127.0.0.1',

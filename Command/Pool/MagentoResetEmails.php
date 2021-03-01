@@ -52,11 +52,11 @@ class MagentoResetEmails extends CommandAbstract
     protected function updateEmails(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
-        $this->commandTitle($io, 'Set Https');
+        $this->commandTitle($io, 'Update customer emails');
 
         $updateAgr = $this->requestOption(MagentoOptions::EMAILS_UPDATE, $input, $output, true);
         if (!$updateAgr) {
-            $output->writeln('<comment>Urls updating skipped</comment>');
+            $output->writeln('<comment>Emails updating skipped</comment>');
             return true;
         }
 
@@ -150,7 +150,7 @@ class MagentoResetEmails extends CommandAbstract
 
 
         if (!isset($e)) {
-            $io->success('Urls has been updated');
+            $io->success('Email addresses have been updated');
         } else {
             $io->warning('Some issues appeared during DB updating');
             return false;
