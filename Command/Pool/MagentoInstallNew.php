@@ -54,7 +54,7 @@ class MagentoInstallNew extends CommandAbstract
             $output
         );
 
-        $mPath = EnvConfig::getValue('WEBSITE_APPLICATION_ROOT') ?: EnvConfig::getValue('WEBSITE_DOCUMENT_ROOT') ?: EnvConfig::getValue('WEBSITE_DOCUMENT_ROOT');
+        $mPath = EnvConfig::getValue('WEBSITE_APPLICATION_ROOT') ?: EnvConfig::getValue('WEBSITE_DOCUMENT_ROOT');
 
         $this->executeCommands(
             sprintf('cd %s && rm -rf var/* pub/static/* app/etc/env.php app/etc/config.php', $mPath),
