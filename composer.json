@@ -5,7 +5,7 @@
     "version": "3.0.0",
     "require": {
         "symfony/console": "^3.1",
-        "ewave/devbox-core-scripts": "dev-release/3 | dev-master"
+        "ewave/devbox-core-scripts": "dev-release/3.0.0 | dev-master"
     },
     "autoload": {
       "files": [ "registration.php" ],
