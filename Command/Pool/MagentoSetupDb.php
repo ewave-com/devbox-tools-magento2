@@ -45,5 +45,7 @@ class MagentoSetupDb extends CoreSetupDb
             $input,
             $output
         );
+
+        return true;
     }
 }
