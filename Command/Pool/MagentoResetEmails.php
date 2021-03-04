@@ -97,7 +97,7 @@ class MagentoResetEmails extends CommandAbstract
             $dbName
         );
 
-        if ($io->ask('Add postfix to email in database?', 'Yes') == 'Yes'){
+        if ($io->confirm('Add postfix to email in database?', true)){
 
             $qm = '
                 drop procedure if exists change_emails;
@@ -146,12 +146,11 @@ class MagentoResetEmails extends CommandAbstract
 
             $dbConnection->exec($qm);
 
+            $io->success('Email addresses have been updated');
         }
 
 
-        if (!isset($e)) {
-            $io->success('Email addresses have been updated');
-        } else {
+        if (isset($e)) {
             $io->warning('Some issues appeared during DB updating');
             return false;
         }
