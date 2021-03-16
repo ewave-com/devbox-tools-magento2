@@ -65,7 +65,7 @@ class Magento extends AbstractOptions
             static::EMAILS_UPDATE => [
                 'boolean' => true,
                 'description' => 'Update Emails',
-                'question' => 'Do you want to add postfix for customers and not only emails in DB? %default%',
+                'question' => 'Do you want to update postfix for customers and not only emails in DB? %default%',
                 'default' => true
             ],
             static::HOST => [
