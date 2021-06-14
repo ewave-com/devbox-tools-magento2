@@ -121,7 +121,7 @@ class MagentoSetupDevAdditional extends CommandAbstract
         $dbConnection->exec($qm4);
 
         $output->writeln('<info>Admin User created (admin / ewave123)...</info>');
-        $destinationPath = EnvConfig::getValue('WEBSITE_DOCUMENT_ROOT');
+        $destinationPath = EnvConfig::getValue('WEBSITE_APPLICATION_ROOT') ?: EnvConfig::getValue('WEBSITE_DOCUMENT_ROOT');
         $command = "cd $destinationPath && php bin/magento admin:user:create --admin-user='admin' --admin-password='ewave123' --admin-email='admin@test.ewave.com' --admin-firstname='LocalAdmin' --admin-lastname='LocalAdmin'";
         $this->executeCommands(
             $command,

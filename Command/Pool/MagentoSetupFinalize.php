@@ -39,7 +39,7 @@ class MagentoSetupFinalize extends CommandAbstract
         $io = new SymfonyStyle($input, $output);
         $this->commandTitle($io, 'Finalization');
 
-        $magentoPath = EnvConfig::getValue('WEBSITE_DOCUMENT_ROOT');
+        $magentoPath = EnvConfig::getValue('WEBSITE_APPLICATION_ROOT') ?: EnvConfig::getValue('WEBSITE_DOCUMENT_ROOT');
         $projectName = EnvConfig::getValue('PROJECT_NAME');
         $containerVarnishHost = EnvConfig::getValue('CONTAINER_VARNISH_NAME');
         $containerVarnishEnable = EnvConfig::getValue('VARNISH_ENABLE');

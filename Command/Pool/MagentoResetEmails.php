@@ -52,11 +52,11 @@ class MagentoResetEmails extends CommandAbstract
     protected function updateEmails(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
-        $this->commandTitle($io, 'Set Https');
+        $this->commandTitle($io, 'Update customer emails');
 
         $updateAgr = $this->requestOption(MagentoOptions::EMAILS_UPDATE, $input, $output, true);
         if (!$updateAgr) {
-            $output->writeln('<comment>Urls updating skipped</comment>');
+            $output->writeln('<comment>Emails updating skipped</comment>');
             return true;
         }
 
@@ -97,8 +97,8 @@ class MagentoResetEmails extends CommandAbstract
             $dbName
         );
 
-        if ($io->ask('Add postfix to email in database?', 'Yes') == 'Yes'){
-
+        $output->writeln('<info>Updating email postfixes</info>');
+        try{
             $qm = '
                 drop procedure if exists change_emails;
                 create procedure change_emails(IN postfix VARCHAR(255) , IN DB_NAME VARCHAR(255))
@@ -146,12 +146,14 @@ class MagentoResetEmails extends CommandAbstract
 
             $dbConnection->exec($qm);
 
+            $io->success('Email addresses have been updated');
+        }  catch (\Exception $e) {
+            $io->warning([$e->getMessage()]);
+            $io->warning('Some issues appeared during emails updating.');
+            return false;
         }
 
-
-        if (!isset($e)) {
-            $io->success('Urls has been updated');
-        } else {
+        if (isset($e)) {
             $io->warning('Some issues appeared during DB updating');
             return false;
         }

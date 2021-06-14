@@ -94,7 +94,7 @@ class MagentoSetupConfigs extends CommandAbstract
         $mysqlRootPasword = EnvConfig::getValue('CONTAINER_MYSQL_ROOT_PASS');
         $mysqlHost = $projectName . '_' . $mysqlHost;
 
-        $mPath = EnvConfig::getValue('WEBSITE_DOCUMENT_ROOT');
+        $mPath = EnvConfig::getValue('WEBSITE_APPLICATION_ROOT') ?: EnvConfig::getValue('WEBSITE_DOCUMENT_ROOT');
         $destinationMagentoPath = $mPath . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'etc';
         if (!$destinationMagentoPath) {
             $destinationMagentoPath = $this->requestOption(MagentoOptions::PATH, $input, $output, true);
