@@ -129,6 +129,7 @@ class MagentoInstallNew extends CommandAbstract
             );
         }
 
+
         if (!is_dir($mPath. DIRECTORY_SEPARATOR . 'pub/static')) {
             $command1 = 'mkdir ' . $mPath . DIRECTORY_SEPARATOR . 'pub/static';
             $this->executeCommands(
@@ -173,7 +174,7 @@ class MagentoInstallNew extends CommandAbstract
         if ($this->requestOption(MagentoOptions::SAMPLE_DATA_INSTALL, $input, $output)) {
             $this->executeCommands(
                 [
-                    sprintf('cd %s && php bin/magento sampledata:deploy', $mPath),
+                    sprintf('cd %s && php -dmemory_limit=4G bin/magento sampledata:deploy', $mPath),
                     sprintf('cd %s && php bin/magento setup:upgrade', $mPath)
                 ],
                 $output
