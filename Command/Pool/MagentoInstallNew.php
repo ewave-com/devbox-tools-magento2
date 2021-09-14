@@ -75,6 +75,9 @@ class MagentoInstallNew extends CommandAbstract
         $dbUser = 'root';
         $dbPassword = EnvConfig::getValue('CONTAINER_MYSQL_ROOT_PASS');
 
+        $esHost = EnvConfig::getValue('CONTAINER_ELASTICSEARCH_NAME');
+        $esHost = $projectName . '_' . $esHost;
+
         if (!$mysqlHost || !$dbName || !$dbPassword) {
             $output->writeln('<comment>Some of required data are missed</comment>');
             $output->writeln('<comment>Reply on:</comment>');
@@ -99,6 +102,7 @@ class MagentoInstallNew extends CommandAbstract
             'cd %s && php bin/magento setup:install'
             . ' --base-url=http://%s/ --db-host=%s --db-name=%s'
             . ' --db-user=%s --db-password=%s --admin-firstname=Magento --admin-lastname=User'
+            . ' --search-engine=elasticsearch7 --elasticsearch-host=%s'
             . ' --admin-email=user@example.com --admin-user=%s --admin-password=%s'
             . ' --language=en_US --currency=USD --timezone=America/Chicago --use-rewrites=1'
             . ' --backend-frontname=%s',
@@ -109,6 +113,7 @@ class MagentoInstallNew extends CommandAbstract
             $dbName,
             $dbUser,
             $dbPassword,
+            $esHost,
             $magentoAdminUser,
             $magentoAdminPassword,
             $magentoBackendPath
