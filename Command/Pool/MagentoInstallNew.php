@@ -54,7 +54,7 @@ class MagentoInstallNew extends CommandAbstract
             $output
         );
 
-        $mPath = EnvConfig::getValue('WEBSITE_DOCUMENT_ROOT');
+        $mPath = EnvConfig::getValue('WEBSITE_APPLICATION_ROOT') ?: EnvConfig::getValue('WEBSITE_DOCUMENT_ROOT');
 
         $this->executeCommands(
             sprintf('cd %s && rm -rf var/* pub/static/* app/etc/env.php app/etc/config.php', $mPath),
@@ -74,6 +74,9 @@ class MagentoInstallNew extends CommandAbstract
         $dbName = EnvConfig::getValue('CONTAINER_MYSQL_DB_NAME');
         $dbUser = 'root';
         $dbPassword = EnvConfig::getValue('CONTAINER_MYSQL_ROOT_PASS');
+
+        $esHost = EnvConfig::getValue('CONTAINER_ELASTICSEARCH_NAME');
+        $esHost = $projectName . '_' . $esHost;
 
         if (!$mysqlHost || !$dbName || !$dbPassword) {
             $output->writeln('<comment>Some of required data are missed</comment>');
@@ -99,6 +102,7 @@ class MagentoInstallNew extends CommandAbstract
             'cd %s && php bin/magento setup:install'
             . ' --base-url=http://%s/ --db-host=%s --db-name=%s'
             . ' --db-user=%s --db-password=%s --admin-firstname=Magento --admin-lastname=User'
+            . ' --search-engine=elasticsearch7 --elasticsearch-host=%s'
             . ' --admin-email=user@example.com --admin-user=%s --admin-password=%s'
             . ' --language=en_US --currency=USD --timezone=America/Chicago --use-rewrites=1'
             . ' --backend-frontname=%s',
@@ -109,6 +113,7 @@ class MagentoInstallNew extends CommandAbstract
             $dbName,
             $dbUser,
             $dbPassword,
+            $esHost,
             $magentoAdminUser,
             $magentoAdminPassword,
             $magentoBackendPath
@@ -123,6 +128,7 @@ class MagentoInstallNew extends CommandAbstract
                 $output
             );
         }
+
 
         if (!is_dir($mPath. DIRECTORY_SEPARATOR . 'pub/static')) {
             $command1 = 'mkdir ' . $mPath . DIRECTORY_SEPARATOR . 'pub/static';
@@ -168,7 +174,7 @@ class MagentoInstallNew extends CommandAbstract
         if ($this->requestOption(MagentoOptions::SAMPLE_DATA_INSTALL, $input, $output)) {
             $this->executeCommands(
                 [
-                    sprintf('cd %s && php bin/magento sampledata:deploy', $mPath),
+                    sprintf('cd %s && php -dmemory_limit=4G bin/magento sampledata:deploy', $mPath),
                     sprintf('cd %s && php bin/magento setup:upgrade', $mPath)
                 ],
                 $output
