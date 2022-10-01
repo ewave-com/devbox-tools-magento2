@@ -2,7 +2,7 @@
     "name": "ewave/devbox-m2-scripts",
     "description": "Scripts to help setup and install m2 application into developer's containers",
     "type": "library",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "require": {
         "symfony/console": "^3.1",
         "ewave/devbox-core-scripts": "^3.0 | dev-master"
